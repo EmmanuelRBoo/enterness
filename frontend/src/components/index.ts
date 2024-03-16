@@ -1,5 +1,7 @@
 import Text from './Text'
+import Card from './Card'
 
 export {
-    Text
+    Text,
+    Card
 }

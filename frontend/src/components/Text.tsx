@@ -3,8 +3,8 @@ import { IText } from '../interfaces/text'
 export default function Input({ children, type, dark, bold, italic, underline }: IText) {
 
     const defaultClasses = `
-        ${dark ? 'text-slate-800' : 'text-slate-200'}
-        ${bold ? 'font-bold' : 'font-normal'} 
+        ${dark ? 'text-zinc-900' : 'text-zinc-300'}
+        ${bold ? 'font-bold' : ''} 
         ${italic ? 'italic' : ''}
         ${underline ? 'underline' : ''}
     `
