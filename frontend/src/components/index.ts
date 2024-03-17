@@ -4,6 +4,7 @@ import ChatBallon from './ChatBallon'
 import Notification from './Notification'
 import ChatInput from './ChatInput'
 import Chat from './Chat'
+import Modal from './Modal'
 
 export {
     Text,
@@ -11,5 +12,6 @@ export {
     ChatBallon,
     Notification,
     ChatInput,
-    Chat
+    Chat,
+    Modal
 }

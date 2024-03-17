@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 import { MagnifyingGlass, Plus } from '@phosphor-icons/react'
-import { Card, Text, Chat } from './components'
+import { Card, Text, Chat, Modal } from './components'
 import { IGetChatList } from './interfaces/api'
 
 const mock = [
@@ -25,6 +25,7 @@ export default function App() {
 	const [filter, setFilter] = useState<string>('')
 	const [selected, setSelected] = useState<IGetChatList | null>(null)
 	const [data, setData] = useState<Array<IGetChatList>>([])
+	const [modal, setModal] = useState<boolean>(true)
 
 	const filterData = data.filter(({ title }) => title.toLowerCase().includes(filter.toLowerCase()))
 
@@ -63,7 +64,10 @@ export default function App() {
 						<div className='flex items-end mb-1 justify-between mx-2 last:text'>
 							<Text bold>Chats</Text>
 
-							<button className='flex items-center gap-1 p-1 px-2 bg-zinc-300 rounded-full'>
+							<button
+								className='flex items-center gap-1 p-1 px-2 bg-zinc-300 rounded-full'
+								onClick={() => setModal(true)}
+							>
 								<Plus weight='bold' size={16} />
 								<Text type='small' bold dark>
 									Add chat
@@ -76,7 +80,7 @@ export default function App() {
 									? (
 										<div className='flex flex-col mt-4 justify-center items-center'>
 											<Text>Nenhum resultado encontrado.</Text>
-											<button >
+											<button onClick={() => setModal(true)}>
 												<Text underline>Criar novo chat</Text>
 											</button>
 										</div>
@@ -86,17 +90,13 @@ export default function App() {
 										<ul className=' max-h-full'>
 											{
 												filterData.map(({ alert, id, title }) => (
-													<li>
+													<li key={id}>
 														<Card
-															key={id}
 															alert={alert}
 															id={id}
 															title={title}
 															selected={selected?.id == id}
-															onClick={(data) => {
-																setSelected(data)
-																console.log(data)
-															}}
+															onClick={setSelected}
 														/>
 													</li>
 												))
@@ -121,6 +121,8 @@ export default function App() {
 					}
 				</div>
 			</section>
+
+			{modal && <Modal onClose={() => setModal(false)} />}
 		</main>
 	)
 }

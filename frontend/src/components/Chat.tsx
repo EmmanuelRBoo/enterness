@@ -8,6 +8,7 @@ export default function Chat({ id, username }: IChat) {
 
     useEffect(() => {
         setLoading(false)
+        //IMPLEMENTAR
         console.log(id)
     }, [])
 
