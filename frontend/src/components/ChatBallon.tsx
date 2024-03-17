@@ -1,6 +1,6 @@
 import { ClipboardText } from '@phosphor-icons/react'
-
 import { IChatBallon } from '../interfaces/chatBallon'
+import { handleNotification } from '../helpers'
 import userImage from '../assets/user.png'
 import { Text } from '.'
 
@@ -12,7 +12,10 @@ export default function ChatBallon({ message, messageTime, userId, username, img
 
         await navigator.clipboard.writeText(String(messageText))
 
-        console.log('TO DO NOTIFICATION', messageText)
+        handleNotification({
+            message: 'Mensagem copiada!',
+            type: 'info'
+        })
     }
 
     return (
@@ -67,6 +70,7 @@ export default function ChatBallon({ message, messageTime, userId, username, img
             <ClipboardText
                 onClick={clipToBoard}
                 size={30}
+                weight='bold'
                 className={`
                     text-zinc-900 
                     hover:bg-opacity-80
