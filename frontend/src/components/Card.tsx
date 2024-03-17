@@ -4,7 +4,7 @@ import { Text } from '.'
 export default function Card({ selected, title, alert, onClick, id }: ICard) {
     return (
         <div
-            onClick={() => onClick(id)}
+            onClick={() => onClick({ id, title })}
             className={`
                 ${selected ? 'bg-zinc-500' : 'bg-zinc-300'}
                 flex

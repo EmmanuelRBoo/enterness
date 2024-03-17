@@ -1,76 +1,30 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 import { MagnifyingGlass, Plus } from '@phosphor-icons/react'
-import { Card, Text } from './components'
+import { Card, Text, Chat } from './components'
 import { IGetChatList } from './interfaces/api'
 
-// Remover mock na integração com o backend
-const mock: IGetChatList[] = [
+const mock = [
 	{
 		id: '1',
-		alert: true,
-		title: 'mensagem 1'
+		title: 'Emmanuel',
+		alert: false
 	},
 	{
 		id: '2',
-		alert: true,
-		title: 'mensagem 2'
+		title: 'Emmanuel 2',
+		alert: false
 	},
 	{
 		id: '3',
-		alert: false,
-		title: 'mensagem 3'
-	},
-	{
-		id: '4',
-		alert: true,
-		title: 'mensagem 4'
-	},
-	{
-		id: '5',
-		alert: false,
-		title: 'mensagem 5'
-	},
-	{
-		id: '6',
-		alert: false,
-		title: 'mensagem 6'
-	},
-	{
-		id: '7',
-		alert: false,
-		title: 'mensagem 7'
-	},
-	{
-		id: '8',
-		alert: false,
-		title: 'mensagem 8'
-	},
-	{
-		id: '9',
-		alert: false,
-		title: 'mensagem 9'
-	},
-	{
-		id: '10',
-		alert: false,
-		title: 'mensagem 10'
-	},
-	{
-		id: '11',
-		alert: false,
-		title: 'mensagem 11'
-	},
-	{
-		id: '12',
-		alert: false,
-		title: 'mensagem 12'
+		title: 'Emmanuel 3',
+		alert: false
 	},
 ]
 
 export default function App() {
 	const [filter, setFilter] = useState<string>('')
-	const [selected, setSelected] = useState<string>('')
-	const [data, setData] = useState<Array<IGetChatList>>(mock)
+	const [selected, setSelected] = useState<IGetChatList | null>(null)
+	const [data, setData] = useState<Array<IGetChatList>>([])
 
 	const filterData = data.filter(({ title }) => title.toLowerCase().includes(filter.toLowerCase()))
 
@@ -86,7 +40,7 @@ export default function App() {
 
 	return (
 		<main className='w-screen h-screen p-4 flex items-center justify-center'>
-			<section className='flex border w-full h-full border-zinc-300 rounded-xl min-h-[90%] max-h-[90%]'>
+			<section className='flex border w-10/12 h-full border-zinc-300 rounded-xl min-h-[90%] max-h-[90%]'>
 				<div className='border-r-2 text-center border-zinc-300 w-1/6 flex flex-col'>
 					<Text bold type='title'>OmniChat</Text>
 
@@ -94,7 +48,7 @@ export default function App() {
 						<input
 							type="text"
 							onChange={handleChange}
-							placeholder='Pesquise o nome do contato'
+							placeholder='Pesquise o contato'
 							className='w-full pl-2 h-8'
 						/>
 
@@ -120,7 +74,7 @@ export default function App() {
 							{
 								filterData.length == 0
 									? (
-										<div className='flex justify-center items-center'>
+										<div className='flex flex-col mt-4 justify-center items-center'>
 											<Text>Nenhum resultado encontrado.</Text>
 											<button >
 												<Text underline>Criar novo chat</Text>
@@ -138,8 +92,11 @@ export default function App() {
 															alert={alert}
 															id={id}
 															title={title}
-															selected={selected == id}
-															onClick={setSelected}
+															selected={selected?.id == id}
+															onClick={(data) => {
+																setSelected(data)
+																console.log(data)
+															}}
 														/>
 													</li>
 												))
@@ -155,7 +112,7 @@ export default function App() {
 				<div className=' w-5/6'>
 					{
 						selected
-							? 'To Do chat'
+							? <Chat id={selected.id} username={selected.title} />
 							: (
 								<div className='flex h-full w-full justify-center items-center'>
 									<Text bold type='subtitle'>Clique em um chat e inicie uma conversa.</Text>
