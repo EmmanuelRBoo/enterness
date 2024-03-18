@@ -12,6 +12,8 @@ COPY .env .
 
 RUN npm run build
 
+RUN yarn prisma migrate deploy
+
 EXPOSE 5000
 
-CMD ["yarn", "start:prod"]
+CMD ["yarn", "start"]
