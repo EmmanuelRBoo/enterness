@@ -11,9 +11,7 @@ services:
     env_file: ./.env
     environment:
       - name=value
-    depends_on:
-      - mysql
-    
+
   client:
     build:
       context: ./frontend
