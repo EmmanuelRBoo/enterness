@@ -51,9 +51,9 @@ export default function ChatInput({ chatId }: { chatId: string }) {
             chatId
         }
 
-        console.log(data)
-
-        socket.emit("messages", data)
+        if (message.length > 1) {
+            socket.emit("messages", data)
+        }
 
         setMessage('')
     }
@@ -112,7 +112,7 @@ export default function ChatInput({ chatId }: { chatId: string }) {
                 </div>
             </div>
 
-            <div className='flex w-4/5 relative'>
+            <div className='flex w-4/5 relative z-0'>
                 {
                     file && (
                         <div

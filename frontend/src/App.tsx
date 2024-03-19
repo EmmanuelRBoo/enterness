@@ -44,8 +44,6 @@ export default function App() {
 
 		socket.on("add_chat", (data) => {
 
-			console.log(data)
-
 			setData(prev => [
 				...prev,
 				{
@@ -54,6 +52,7 @@ export default function App() {
 				}
 			])
 		})
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	return (

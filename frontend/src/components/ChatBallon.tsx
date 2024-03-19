@@ -1,4 +1,5 @@
-import { ClipboardText } from '@phosphor-icons/react'
+import { useState } from 'react'
+import { ClipboardText, X } from '@phosphor-icons/react'
 import moment from 'moment'
 import { IChatBallon } from '../interfaces/chatBallon'
 import { handleNotification } from '../helpers'
@@ -6,6 +7,8 @@ import userImage from '../assets/user.png'
 import { Text } from '.'
 
 export default function ChatBallon({ message, messageTime, username, img, id, itsMe }: IChatBallon) {
+    const [preview, setPreview] = useState<string | null>(null)
+
     const clipToBoard = async () => {
         const messageText = document.querySelector(`#${id} > p`)?.innerHTML
 
@@ -53,17 +56,36 @@ export default function ChatBallon({ message, messageTime, username, img, id, it
                     w-fit 
                     p-2 
                     mx-2 
-                    relative 
+                    relative
+                    ${preview == img ? 'z-10' : 'z-0'}
                     rounded-xl 
                     ${itsMe ? 'rounded-tr-none' : 'rounded-tl-none'}
                 `}
             >
                 <Text bold dark type='span'>{username}</Text>
 
-                <div className={` flex flex-col items-start w-full p-2`} id={id}>
+                <div className={`flex flex-col items-start w-full p-2`} id={id}>
+                    {
+                        preview && (
+                            <X
+                                className='fixed top-5 right-5 z-30 cursor-pointer p-1 text-zinc-300'
+                                size={48}
+                                weight='bold'
+                                onClick={() => setPreview(null)}
+                            />
+                        )
+                    }
                     {
                         img && (
-                            <img src={img} className='w-40 h-auto object-contain' />
+                            <div
+                                className={preview ? 'fixed flex items-center justify-center top-0 left-0 w-screen h-screen  bg-zinc-900 bg-opacity-60' : ''}
+                                onClick={() => setPreview(img)}
+                            >
+                                <img
+                                    src={img}
+                                    className={preview ? 'h-full p-6' : 'max-w-72 w-full h-auto object-contain cursor-pointer'}
+                                />
+                            </div>
                         )
                     }
                     <Text dark>{message}</Text>

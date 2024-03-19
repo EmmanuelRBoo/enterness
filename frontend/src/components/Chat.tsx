@@ -43,7 +43,6 @@ export default function Chat({ id, username }: IChat) {
             })
 
         socket.on("messages", (data) => {
-            console.log(data)
             setMessages(prev => [
                 ...prev,
                 {
