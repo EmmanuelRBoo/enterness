@@ -5,4 +5,5 @@ export interface IChatBallon {
     userId: string
     message: string
     messageTime: string
+    itsMe: boolean
 }

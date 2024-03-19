@@ -1,12 +1,11 @@
 import { ClipboardText } from '@phosphor-icons/react'
+import moment from 'moment'
 import { IChatBallon } from '../interfaces/chatBallon'
 import { handleNotification } from '../helpers'
 import userImage from '../assets/user.png'
 import { Text } from '.'
 
-export default function ChatBallon({ message, messageTime, userId, username, img, id }: IChatBallon) {
-    const itsMe = userId == 'myIdToDo'
-
+export default function ChatBallon({ message, messageTime, username, img, id, itsMe }: IChatBallon) {
     const clipToBoard = async () => {
         const messageText = document.querySelector(`#${id} > p`)?.innerHTML
 
@@ -33,7 +32,7 @@ export default function ChatBallon({ message, messageTime, userId, username, img
             `}
         >
             <img
-                src={img ? img : userImage}
+                src={userImage}
                 className={`
                     w-8 
                     h-8 
@@ -45,7 +44,10 @@ export default function ChatBallon({ message, messageTime, userId, username, img
 
             <div
                 className={`
-                    ${itsMe ? 'bg-zinc-300' : 'bg-zinc-500'} 
+                  bg-zinc-300 
+                    flex
+                    flex-col
+                    ${itsMe ? 'items-end' : 'items-start'}
                     min-w-40 
                     max-w-96 
                     w-fit 
@@ -58,12 +60,17 @@ export default function ChatBallon({ message, messageTime, userId, username, img
             >
                 <Text bold dark type='span'>{username}</Text>
 
-                <div className='m-2' id={id}>
+                <div className={` flex flex-col items-start w-full p-2`} id={id}>
+                    {
+                        img && (
+                            <img src={img} className='w-40 h-auto object-contain' />
+                        )
+                    }
                     <Text dark>{message}</Text>
                 </div>
 
                 <div className='flex justify-end w-full'>
-                    <Text italic underline dark type='small'>{messageTime}</Text>
+                    <Text italic underline dark type='small'>{moment(messageTime).format('DD/MM/YYYY HH:mm')}</Text>
                 </div>
             </div>
 

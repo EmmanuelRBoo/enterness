@@ -4,7 +4,7 @@ import { getUserByLogin, postUser, getUserByName } from '../services/user'
 const error = async (res: Response) => res.status(500).send('Houve um erro no servidor')
 
 export const login = async (req: Request, res: Response) => {
-    const { name, password } = req.body
+    const { name, password } = req.body.data
 
     try {
         const user = await getUserByLogin({ name, password })
@@ -20,7 +20,7 @@ export const login = async (req: Request, res: Response) => {
 }
 
 export const register = async (req: Request, res: Response) => {
-    const { name, password } = req.body
+    const { name, password } = req.body.data
 
     try {
         const user = await getUserByName(name)
@@ -29,9 +29,9 @@ export const register = async (req: Request, res: Response) => {
             return res.status(404).send('Usuário já existe')
         }
 
-        await postUser({ name, password  })
+        await postUser({ name, password })
 
-        return res.status(200).send('Usuário cadastrado com sucesso')
+        return res.status(201).send('Usuário cadastrado com sucesso')
     } catch (e) {
         return error(res)
     }

@@ -1,5 +1,7 @@
 import handleNotification from './notification'
+import session from './sessionStorage'
 
 export {
-    handleNotification
+    handleNotification,
+    session
 }

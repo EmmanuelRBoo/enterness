@@ -1,9 +1,10 @@
-import { ChangeEvent, useEffect, useState, useRef } from 'react'
+import { ChangeEvent, useEffect, useState, useRef, FormEvent } from 'react'
 import { Paperclip, SmileySticker, PaperPlaneRight, X } from '@phosphor-icons/react'
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react'
-import { handleNotification } from '../helpers'
+import { handleNotification, session } from '../helpers'
+import { socket } from '../api/socket'
 
-export default function ChatInput() {
+export default function ChatInput({ chatId }: { chatId: string }) {
     const [message, setMessage] = useState<string>('')
     const [showEmoji, setShowEmoji] = useState<boolean>(false)
     const [file, setFile] = useState<string | ArrayBuffer | null>('')
@@ -40,6 +41,23 @@ export default function ChatInput() {
     const handleFile = () => fileRef?.current?.click()
     const handleEmoji = () => setShowEmoji(e => !e)
 
+    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+
+        const data = {
+            content: message,
+            userId: session.getItem('user', '').id,
+            image: file,
+            chatId
+        }
+
+        console.log(data)
+
+        socket.emit("messages", data)
+
+        setMessage('')
+    }
+
     useEffect(() => {
         const handleOutsideClick = (event: MouseEvent) => {
             if (showEmoji && !emojiContainerRef.current?.contains(event.target as Node)) {
@@ -56,6 +74,7 @@ export default function ChatInput() {
 
     return (
         <form
+            onSubmit={handleSubmit}
             className='flex items-center justify-evenly mb-1 w-full'
         >
 
@@ -112,7 +131,6 @@ export default function ChatInput() {
                                 onClick={() => setFile(null)}
                             />
                         </div>
-
                     )
                 }
 
@@ -125,11 +143,13 @@ export default function ChatInput() {
                 />
             </div>
 
-            <PaperPlaneRight
-                size={32}
-                weight='bold'
-                className='text-zinc-300 hover:bg-zinc-500 hover:bg-opacity-65 p-1 rounded-full cursor-pointer'
-            />
+            <button type='submit'>
+                <PaperPlaneRight
+                    size={32}
+                    weight='bold'
+                    className='text-zinc-300 hover:bg-zinc-500 hover:bg-opacity-65 p-1 rounded-full cursor-pointer'
+                />
+            </button>
         </form>
     )
 }

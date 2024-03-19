@@ -14,7 +14,7 @@ const createNumber = async (): Promise<string> => {
 }
 
 export const getUserByLogin = async ({ name, password }: IUser) => {
-    return await db.user.findUnique({ 
+    return await db.user.findFirst({ 
         where: { name, password }, 
         select: { 
             id: true,
@@ -35,5 +35,9 @@ export const postUser = async ({ name, password }: IUser) => {
 }
 
 export const getUserByName = async (name: string) => {
-    return await db.user.findUnique({ where: { name }})
+    return await db.user.findFirst({ where: { name }})
+}
+
+export const getUserByPhone = async (phone: string) => {
+    return await db.user.findUnique({ where: { phone } })
 }

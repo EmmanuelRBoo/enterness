@@ -2,55 +2,73 @@ import { ChangeEvent, useEffect, useState } from 'react'
 import { MagnifyingGlass, Plus } from '@phosphor-icons/react'
 import { Card, Text, Chat, Modal } from './components'
 import { IGetChatList } from './interfaces/api'
-
-const mock = [
-	{
-		id: '1',
-		title: 'Emmanuel',
-		alert: false
-	},
-	{
-		id: '2',
-		title: 'Emmanuel 2',
-		alert: false
-	},
-	{
-		id: '3',
-		title: 'Emmanuel 3',
-		alert: false
-	},
-]
+import { session } from './helpers'
+import { api } from './api'
+import { socket } from './api/socket'
 
 export default function App() {
 	const [filter, setFilter] = useState<string>('')
 	const [selected, setSelected] = useState<IGetChatList | null>(null)
 	const [data, setData] = useState<Array<IGetChatList>>([])
-	const [modal, setModal] = useState<boolean>(true)
+	const [modal, setModal] = useState<boolean>(false)
+
+	const user = session.getItem('user', '')
 
 	const filterData = data.filter(({ title }) => title.toLowerCase().includes(filter.toLowerCase()))
 
 	const handleChange = ({ target }: ChangeEvent<HTMLInputElement>) => setFilter(target.value)
 
 	const handleGetChats = () => {
-		setData(mock)
+		api.get(`/chat/${user.phone}`)
+			.then(res => {
+				const list: Array<IGetChatList> = []
+
+				if (res.data.length > 0) {
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					res.data.forEach((response: any) => {
+						list.push({
+							id: response.id,
+							title: response.ownerName == user.name ? response.userName : response.ownerName
+						})
+					})
+				}
+
+				setData(list)
+			})
 	}
 
 	useEffect(() => {
 		handleGetChats()
+
+		socket.emit("online", { phone: user.phone })
+
+		socket.on("add_chat", (data) => {
+
+			console.log(data)
+
+			setData(prev => [
+				...prev,
+				{
+					id: data.id,
+					title: data.ownerName == user.name ? data.userName : data.ownerName
+				}
+			])
+		})
 	}, [])
 
 	return (
-		<main className='w-screen h-screen p-4 flex items-center justify-center'>
-			<section className='flex border w-10/12 h-full border-zinc-300 rounded-xl min-h-[90%] max-h-[90%]'>
-				<div className='border-r-2 text-center border-zinc-300 w-1/6 flex flex-col'>
+		<main className='w-screen h-screen p-4 flex flex-col gap-4 items-center justify-center'>
+			<Text type='subtitle'>Olá {user.name} seu número é: {user.phone}</Text>
+			<section className='flex border h-full w-full border-zinc-300 rounded-xl min-h-[90%] max-h-[90%]'>
+				<div className='border-r-2 pt-4 text-center border-zinc-300 w-1/6 flex flex-col min-w-60'>
 					<Text bold type='title'>OmniChat</Text>
 
-					<div className='p-4 relative'>
+					<div className='p-2 relative'>
 						<input
 							type="text"
 							onChange={handleChange}
 							placeholder='Pesquise o contato'
-							className='w-full pl-2 h-8'
+							className='w-full pl-2 h-8 rounded-lg'
 						/>
 
 						<MagnifyingGlass
@@ -87,7 +105,7 @@ export default function App() {
 									)
 									: (
 
-										<ul className=' max-h-full'>
+										<ul className='max-h-full'>
 											{
 												filterData.map(({ alert, id, title }) => (
 													<li key={id}>
@@ -109,7 +127,7 @@ export default function App() {
 					</div>
 				</div>
 
-				<div className=' w-5/6'>
+				<div className='h-full min-w-96 w-full'>
 					{
 						selected
 							? <Chat id={selected.id} username={selected.title} />
@@ -122,7 +140,7 @@ export default function App() {
 				</div>
 			</section>
 
-			{modal && <Modal onClose={() => setModal(false)} />}
+			{modal && <Modal onClose={() => setModal(false)} callback={handleGetChats} />}
 		</main>
 	)
 }

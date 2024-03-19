@@ -5,6 +5,7 @@ import Notification from './Notification'
 import ChatInput from './ChatInput'
 import Chat from './Chat'
 import Modal from './Modal'
+import Login from './Login'
 
 export {
     Text,
@@ -13,5 +14,6 @@ export {
     Notification,
     ChatInput,
     Chat,
-    Modal
+    Modal,
+    Login
 }
